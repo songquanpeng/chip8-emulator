@@ -4,7 +4,7 @@ import Controller from "./browser/controller.js";
 import Loader from "./browser/loader.js";
 import Speaker from "./browser/speaker.js";
 
-const renderer = new Renderer();
+const renderer = new Renderer("canvas");
 const controller = new Controller();
 const loader = new Loader();
 const speaker = new Speaker();
@@ -25,9 +25,10 @@ function step(currentTime) {
 function main(fps) {
   lastTime = 0;
   fpsInterval = 1000 / fps;
-  emulator.speed = 1;
-  emulator.loadRom("rom");
-  window.requestAnimationFrame(step);
+  emulator.speed = 10;
+  emulator.loadRom("/rom/BLINKY").then(() => {
+    window.requestAnimationFrame(step);
+  });
 }
 
-main(6);
+main(60);

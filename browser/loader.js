@@ -1,5 +1,7 @@
 class Loader {
-  constructor() {
+  async load(path) {
+    let res = await fetch(path);
+    return await res.arrayBuffer();
   }
 }
 
