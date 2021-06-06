@@ -1,14 +1,18 @@
 # Chip-8 Emulator
 ## Demo
-https://chip8.justsong.cn/?rom=ROM_NAME_HERE
+https://chip8.justsong.cn/
 
 Available roms:
-1. BLINKY
-2. TANK
-3. TETRIS
+1. BLINKY: https://chip8.justsong.cn/?rom=BLINKY
+2. TANK: https://chip8.justsong.cn/?rom=TANK
+3. TETRIS: https://chip8.justsong.cn/?rom=TETRIS
+
+The key mapping has been adjusted, the blank key and the arrow keys are enough for most roms.
 
 ## Notice
 `main.js` is for browser environment, and `app.js` is for console environment.
+
+The audio part has not been implemented yet.
 
 ## Reference
 1. http://devernay.free.fr/hacks/chip8/C8TECH10.HTM

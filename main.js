@@ -33,8 +33,8 @@ function main(fps) {
   let rom = "BLINKY";
   if (params.has("rom")) {
     rom = params.get("rom");
-    rom = rom.toUpperCase();
   }
+  emulator.controller.adjustKeyMapping(rom);
   emulator.loadRom(`/rom/${rom}`).then(() => {
     window.requestAnimationFrame(step);
   });
