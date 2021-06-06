@@ -140,7 +140,13 @@ class Emulator {
   execute() {
     let opcode = (this.memory[this.pc] << 8) | this.memory[this.pc + 1];
     this.count++;
-    // console.log(this.count++, this.pc, "0x" + opcode.toString(16));
+    // console.log(
+    //   this.count,
+    //   this.pc,
+    //   this.i,
+    //   this.v[0],
+    //   "0x" + opcode.toString(16)
+    // );
     this.pc += 2;
     // *x**
     const x = (opcode >> 8) & 0x0f;
@@ -169,7 +175,9 @@ class Emulator {
             // Return from a subroutine.
             // The interpreter sets the program counter to the address at the top of the stack,
             // then subtracts 1 from the stack pointer.
-            this.pc = this.stack[--this.sp];
+            this.sp--;
+            this.pc =
+              (this.stack[2 * this.sp] << 8) | this.stack[2 * this.sp + 1];
             break;
           default:
             // 0x0NNN
@@ -189,7 +197,9 @@ class Emulator {
         // The interpreter increments the stack pointer,
         // then puts the current PC on the top of the stack.
         // The PC is then set to nnn.
-        this.stack[this.sp++] = this.pc;
+        this.stack[2 * this.sp] = (this.pc >> 8) & 0xff;
+        this.stack[2 * this.sp + 1] = this.pc & 0xff;
+        this.sp++;
         this.pc = opcode & 0x0fff;
         break;
       case 0x3:
@@ -311,15 +321,20 @@ class Emulator {
         // dxyn
         // Display n-byte sprite starting at memory location I at (Vx, Vy),
         // set VF = collision.
-        // TODO: make sure nothing wrong here!
-        console.log(this.count);
-        debugger;
+        let startX = vx;
+        let startY = vy;
+        if (startX > this.renderer.width) startX %= this.renderer.width;
+        if (startY > this.renderer.height) startY %= this.renderer.height;
+        let endX = Math.min(startX + 8, this.renderer.width);
+        let endY = Math.min(startY + n, this.renderer.height);
+
         this.v[0xf] = 0;
-        for (let i = 0; i < Math.min(this.renderer.height - vy, n); i++) {
-          let spriteByte = this.memory[this.i + i];
-          for (let j = 0; j < Math.min(this.renderer.width - vx, 8); j++) {
-            if (((spriteByte << j) & 0x80) === 1) {
-              let pixelIndex = (vx + j) * this.renderer.width + vy + i;
+        for (let y = startY; y < endY; y++) {
+          let spriteByte = this.memory[this.i + (y - startY)];
+          for (let x = startX; x < endX; x++) {
+            let spritePixel = spriteByte & (0x80 >> (x - startX));
+            if (spritePixel) {
+              let pixelIndex = y * this.renderer.width + x;
               let byteIndex = Math.floor(pixelIndex / 8);
               let offset = pixelIndex % 8;
               if ((this.videoMemory[byteIndex] & (0x80 >> offset)) !== 0) {
@@ -408,15 +423,15 @@ class Emulator {
             // Store registers V0 through Vx in memory starting at location I.
             // Notice, conflict here!
             for (let i = 0; i <= x; i++) {
-              this.memory[this.i + i] = this.v[this.i];
+              this.memory[this.i + i] = this.v[i];
             }
             break;
           case 0x65:
-            // fx55
+            // fx65
             // Read registers V0 through Vx from memory starting at location I.
             // Notice, conflict here!
             for (let i = 0; i <= x; i++) {
-              this.v[this.i + i] = this.memory[this.i];
+              this.v[i] = this.memory[this.i + i];
             }
             break;
         }

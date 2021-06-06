@@ -25,7 +25,7 @@ function step(currentTime) {
 function main(fps) {
   lastTime = 0;
   fpsInterval = 1000 / fps;
-  emulator.speed = 10;
+  emulator.speed = 20;
   emulator.loadRom("/rom/BLINKY").then(() => {
     window.requestAnimationFrame(step);
   });

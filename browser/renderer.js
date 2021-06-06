@@ -25,7 +25,6 @@ class Renderer {
       let byteIndex = Math.floor(i / 8);
       let offset = i % 8;
       if ((videoMemory[byteIndex] & (0x80 >> offset)) !== 0) {
-        debugger;
         this.ctx.fillRect(
           col * this.scale,
           row * this.scale,
