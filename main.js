@@ -23,10 +23,19 @@ function step(currentTime) {
 }
 
 function main(fps) {
+  console.log(
+    "Github repository: https://github.com/songquanpeng/chip8-emulator"
+  );
   lastTime = 0;
   fpsInterval = 1000 / fps;
   emulator.speed = 20;
-  emulator.loadRom("/rom/BLINKY").then(() => {
+  const params = new URLSearchParams(window.location.search);
+  let rom = "BLINKY";
+  if (params.has("rom")) {
+    rom = params.get("rom");
+    rom = rom.toUpperCase();
+  }
+  emulator.loadRom(`/rom/${rom}`).then(() => {
     window.requestAnimationFrame(step);
   });
 }

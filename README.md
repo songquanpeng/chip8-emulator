@@ -1,4 +1,12 @@
 # Chip-8 Emulator
+## Demo
+https://chip8.justsong.cn/?rom=ROM_NAME_HERE
+
+Available roms:
+1. BLINKY
+2. TANK
+3. TETRIS
+
 ## Notice
 `main.js` is for browser environment, and `app.js` is for console environment.
 
